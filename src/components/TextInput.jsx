@@ -1,7 +1,6 @@
 import { createEffect } from "solid-js";
 import { setStore, store } from "../Store";
-import { header, panel } from "../styles";
-import AutoText from "./AutoText";
+import { panel } from "../styles";
 import s from "./TextInput.module.css";
 
 const TextInput = (props) => {
