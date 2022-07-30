@@ -1,4 +1,4 @@
-## character-creator
+## a diary of digital flesh
 
 stack: threejs, solidjs, tailwind
 
