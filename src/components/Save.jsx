@@ -4,7 +4,7 @@ import { setStore, store } from "../Store";
 import { headerButton, panel } from "../styles";
 
 const Save = () => {
-  const addValue = async () => {
+  const saveDiaryEntry = async () => {
     if (fals(store.skeleton)) return;
     const data = {
       pose: skeletonToPose(store.skeleton),
@@ -40,9 +40,10 @@ const Save = () => {
       body: JSON.stringify(data),
     });
   };
+
   return (
     <div class={panel}>
-      <button class={headerButton} onClick={addValue} innerHTML="save" />
+      <button class={headerButton} onClick={saveDiaryEntry} innerHTML="save" />
     </div>
   );
 };
