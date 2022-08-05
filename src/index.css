@@ -40,6 +40,14 @@ code {
   width: 100vw;
 }
 
+:root {
+  --tw-bg-opacity: 1;
+  --track-bg: rgb(243 244 246);
+  --input-bg: #f4f4f4;
+  --scroll-thumb: #dddddd;
+  --input-thumb: #d6d6d6;
+}
+
 input[type="range"] {
   -webkit-appearance: none;
   width: 100%;
@@ -68,14 +76,6 @@ input[type="range"]::-moz-range-thumb {
 
 input[type="range"]:hover::-moz-range-thumb {
   background: rgb(107 114 128 / var(--tw-text-opacity));
-}
-
-:root {
-  --tw-bg-opacity: 1;
-  --track-bg: rgb(243 244 246);
-  --input-bg: #f4f4f4;
-  --scroll-thumb: #dddddd;
-  --input-thumb: #d6d6d6;
 }
 
 ::-webkit-scrollbar-thumb {
