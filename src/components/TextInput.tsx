@@ -1,21 +1,23 @@
-import { createEffect } from "solid-js";
-import { setStore, store } from "../Store";
-import { panel } from "../styles";
-import s from "./TextInput.module.css";
+import { createEffect } from "solid-js"
+import { setStore, store } from "../Store"
+import { panel } from "../styles"
+import s from "./TextInput.module.css"
 
-const TextInput = (props) => {
-  let ref;
+const TextInput = (props: { maxHeight: number }) => {
+  let ref: HTMLDivElement | undefined
 
-  const onInput = ({ target: { value } }) => {
-    update(value);
-    setStore("text", value);
-  };
+  const onInput = (e: Event) => {
+    const value = (e.target as HTMLTextAreaElement).value
+    update(value)
+    setStore("text", value)
+  }
 
-  const update = (value) => {
-    ref.dataset.replicatedValue = value;
-  };
+  const update = (value: string) => {
+    if (!ref) return
+    ref.dataset.replicatedValue = value
+  }
 
-  createEffect(() => update(store.text));
+  createEffect(() => update(store.text))
 
   return (
     <div class={`${panel} bg-gray-100 p-2 pointer-events-auto w-full mt-auto`}>
@@ -32,7 +34,7 @@ const TextInput = (props) => {
             onFocus={() => setStore("isTextFocused", true)}
             onBlur={() => setStore("isTextFocused", false)}
             value={store.text || ""}
-            spellCheck="false"
+            spellcheck={false}
             class="pl-2 p-1 hover:text-gray-700 text-gray-500 focus:text-gray-700 border-gray-200 border-2 focus:outline-none rounded-md"
             style={{
               "max-height": `calc(${props.maxHeight} - 1em)` ?? null,
@@ -41,7 +43,7 @@ const TextInput = (props) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TextInput;
+export default TextInput

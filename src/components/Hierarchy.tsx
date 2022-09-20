@@ -1,14 +1,14 @@
-import { Show } from "solid-js";
-import { createSignal } from "solid-js";
-import { createEffect } from "solid-js";
-import { batch } from "solid-js";
-import { Match } from "solid-js";
-import { Switch } from "solid-js";
-import { setStore, store } from "../Store";
-import { header, panel } from "../styles";
+import { For, Show } from "solid-js"
+import { createSignal } from "solid-js"
+import { createEffect } from "solid-js"
+import { batch } from "solid-js"
+import { Match } from "solid-js"
+import { Switch } from "solid-js"
+import { setStore, store } from "../Store"
+import { header, panel } from "../styles"
 
-const Layer = (props) => {
-  const [collapsed, setCollapsed] = createSignal(false);
+const Layer = (props: { node: THREE.Object3D; margin: number }) => {
+  const [collapsed, setCollapsed] = createSignal(false)
 
   return (
     <div class="whitespace-nowrap" style={{ "margin-left": "0.25em" }}>
@@ -24,7 +24,7 @@ const Layer = (props) => {
 
       <button
         class={`active:bg-gray-100 pl-1 pr-1 pt-1 rounded-md ${
-          store.selectedNode?.name === props.node.name
+          store.selectedNode && store.selectedNode.name === props.node.name
             ? " bg-gray-200 text-gray-700"
             : "hover:bg-gray-200 hover:text-gray-700"
         }`}
@@ -33,8 +33,8 @@ const Layer = (props) => {
             setStore(
               "selectedNode",
               store.selectedNode !== props.node ? props.node : false
-            );
-          });
+            )
+          })
         }}
         innerHTML={props.node.name}
       />
@@ -45,8 +45,8 @@ const Layer = (props) => {
         </For>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const Hierarchy = () => {
   return (
@@ -54,10 +54,10 @@ const Hierarchy = () => {
       <h3 class={header}>hierarchy</h3>
       <Show when={store.skeleton}>
         <div class="font-mono text-xs overflow-auto text-gray-500 p-2">
-          <Layer node={store.skeleton.children[0]} margin={0} />
+          <Layer node={store.skeleton!.children[0]} margin={0} />
         </div>
       </Show>
     </div>
-  );
-};
-export default Hierarchy;
+  )
+}
+export default Hierarchy
