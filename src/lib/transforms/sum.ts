@@ -1,4 +1,4 @@
-import { ObjectType, ArrayType, AcceptedTypes } from "./types"
+import { ObjectType, ArrayType, AcceptedTypes, ValueType } from "./types"
 const sumObjects = (a: ObjectType, b: ObjectType, positive: boolean) =>
   Object.fromEntries(
     Object.keys(a).map((key): [key: string, value: any] => [
@@ -14,7 +14,7 @@ export const sum = <T extends AcceptedTypes>(
   a: T,
   b: T,
   positive = true
-): T => {
+): T | ValueType => {
   if (!a || !b) {
     return a || b
   }
@@ -23,7 +23,13 @@ export const sum = <T extends AcceptedTypes>(
     return sumArrays(a, b, positive) as T
   } else if (a instanceof Object && b instanceof Object) {
     return sumObjects(a, b, positive) as T
+  } else if (typeof a === "number" && typeof b === "number") {
+    return positive ? +a + +b : +a - +b
+  } else if (typeof a === "string" && typeof b === "string") {
+    return positive ? +a + +b : +a - +b
   } else {
-    return (positive ? +a + +b : +a - +b) as T
+    return a
   }
 }
+
+let x = sum(5, 2)
