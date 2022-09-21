@@ -24,7 +24,7 @@ export const preprocessMorphs = (dictionary: { [key: string]: number }) => {
   const morphs: MorphsDictionary = {}
 
   Object.entries(dictionary).forEach(([name, index]) => {
-    const [area, type] = name.split("___")
+    const [area, type] = name.split("__")
 
     if (!(area in morphs)) {
       morphs[area] = {
@@ -52,6 +52,7 @@ export function flattenHierarchy(node: THREE.Object3D) {
     stack.push(node)
     node.children.forEach((node) => walk(node))
   }
+  console.log("NODE IS", node)
   walk(node)
   return stack
 }

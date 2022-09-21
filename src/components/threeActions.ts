@@ -6,6 +6,12 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { TransformControls } from "three/examples/jsm/controls/TransformControls"
 import fals from "fals"
 import { dirty } from "../actions"
+import {
+  flattenHierarchy,
+  preprocessMorphs,
+  skeletonToPose,
+} from "../helpers/helpers"
+import { CompressedPixelFormat } from "three"
 
 export const initScene = (canvas: HTMLCanvasElement) => {
   const width = canvas.parentElement?.clientWidth || window.innerWidth
@@ -197,7 +203,9 @@ export const initSideEffects = ({
   //  loading model in App -> adding it to the scene through an effect
   createEffect(() => {
     if (!store.model) return
+
     scene.add(store.model)
+    store.model.visible = true
     dirty()
     // TODO: figure out a better way to register when texture has loaded
     setTimeout(() => setStore("dirty", true), 500)
@@ -241,4 +249,79 @@ export const initRender = ({
   }
   dirty()
   render()
+}
+
+const findBones = (model: THREE.Object3D) => {
+  const walk = (node: THREE.Object3D): THREE.Object3D | void => {
+    let temp_node
+    for (let i = 0; i < node.children.length; i++) {
+      temp_node = node.children[i]
+      if (temp_node.type === "Bone") {
+        return temp_node
+      } else {
+        const result = walk(temp_node)
+        if (result) return result
+      }
+    }
+  }
+  return walk(model)
+}
+
+const findSkinnedMesh = (model: THREE.Object3D): THREE.Mesh | void => {
+  const walk = (node: THREE.Object3D): THREE.Mesh | void => {
+    let temp_node
+    for (let i = 0; i < node.children.length; i++) {
+      temp_node = node.children[i]
+      if (
+        temp_node.type === "SkinnedMesh" ||
+        "morphTargetInfluences" in temp_node
+      ) {
+        return temp_node as THREE.Mesh
+      } else {
+        const result = walk(temp_node)
+        if (result) return result
+      }
+    }
+  }
+
+  if (model.type === "SkinnedMesh" || "morphTargetInfluences" in model) {
+    return model as THREE.Mesh
+  }
+  return walk(model)
+}
+
+export function addLoadedModelToScene(model: THREE.Object3D) {
+  model.visible = false
+  const skinnedMesh = findSkinnedMesh(model)
+  const skeleton = findBones(model)
+
+  console.log("skinnedMesh IS ", skinnedMesh)
+
+  if (!skinnedMesh) return
+
+  // skinnedMesh.children.forEach((child) => (child.visible = false))
+
+  if (store.model) {
+    console.log(store.model.parent)
+    store.model.parent?.remove(store.model)
+    setStore("entries", [])
+  }
+
+  if (skeleton) {
+    const defaultPose = skeleton.clone()
+
+    setStore("skeleton", skeleton as THREE.Object3D)
+    setStore("flatHierarchy", flattenHierarchy(skeleton))
+    setStore("defaultPose", skeletonToPose(defaultPose))
+  }
+
+  console.log("add model", model)
+
+  setStore("model", model)
+  setStore("morphs", {
+    targets: skinnedMesh.morphTargetInfluences,
+    dictionary: skinnedMesh.morphTargetDictionary
+      ? preprocessMorphs(skinnedMesh.morphTargetDictionary)
+      : {},
+  })
 }
