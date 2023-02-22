@@ -1,3 +1,4 @@
+// currently deployed on a shared hosting w php (see /api-directory)
 
 const fs = require('fs');
 const glob = require('glob');
@@ -19,7 +20,7 @@ app.post('/saveDiaryEntry', (req, res) => {
   }
   let dateTimeUTC = new Date().toLocaleString().split(",")[0].replaceAll("/", "_");
   console.log(dateTimeUTC);
-  fs.writeFile(`./entries/${dateTimeUTC}.json`, JSON.stringify(req.body), (err) => {
+  fs.writeFile(`./api/entries/${dateTimeUTC}.json`, JSON.stringify(req.body), (err) => {
     if (err) {
       console.error(err)
       res.status(500).send(err)
@@ -31,7 +32,7 @@ app.post('/saveDiaryEntry', (req, res) => {
 })
 
 app.get('/getDiaryEntries', (req, res) => {
-  glob('./entries/*.json', async (error, filepaths) => {
+  glob('./api/entries/*.json', async (error, filepaths) => {
     if (error) res.status(500).render('error', { error })
     const json = filepaths.map(filepath => ({
       name: path.basename(filepath).split(".json")[0],
