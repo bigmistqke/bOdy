@@ -30,7 +30,7 @@ const Save = () => {
       );
     }
 
-    await fetch("http://localhost:8080/saveDiaryEntry", {
+    await fetch("http://localhost:8080/api/saveDiaryEntry", {
       method: "POST",
       mode: "cors",
       cache: "no-cache",

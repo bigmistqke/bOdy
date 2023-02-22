@@ -76,7 +76,7 @@ export function skeletonToPose(skeleton: THREE.Object3D) {
 }
 
 export async function fetchEntries() {
-  const response = await fetch("http://localhost:8080/getDiaryEntries")
+  const response = await fetch("http://localhost:8080/api/getDiaryEntries")
   if (response.status !== 200) {
     console.error(response)
     return
