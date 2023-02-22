@@ -1,8 +1,10 @@
+import * as THREE from "three"
+
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader"
 import { scale } from "../lib/transforms/scale"
 import { sum } from "../lib/transforms/sum"
 
-const MODEL_PATH = "./human.fbx"
+const MODEL_PATH = "./assets/hannah.fbx"
 export const fbxLoader = new FBXLoader()
 
 export type PoseNode = {
