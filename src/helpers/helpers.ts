@@ -2,7 +2,7 @@ import * as THREE from 'three'
 
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
-const MODEL_PATH = './assets/hannah.fbx'
+const MODEL_PATH = './hannah.fbx'
 export const fbxLoader = new FBXLoader()
 
 export type PoseNode = {
@@ -75,7 +75,7 @@ export function skeletonToPose(skeleton: THREE.Object3D) {
 }
 
 export async function fetchEntries() {
-  const response = await fetch('http://localhost:8888/api/getDiaryEntries.php')
+  const response = await fetch('./getDiaryEntries.php')
   if (response.status !== 200) {
     console.error(response)
     return

@@ -26,7 +26,7 @@ const Save = () => {
       setStore('entries', store.entries.length, JSON.parse(JSON.stringify(data)))
     }
 
-    await fetch('http://localhost:8888/api/saveDiaryEntry.php', {
+    await fetch('./saveDiaryEntry.php', {
       method: 'POST',
       mode: 'no-cors',
       cache: 'no-cache',
