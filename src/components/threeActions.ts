@@ -1,17 +1,11 @@
-import { createEffect } from "solid-js"
-import { setStore, store } from "../Store"
+import { createEffect } from 'solid-js'
+import { setStore, store } from '../Store'
 
-import * as THREE from "three"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import { TransformControls } from "three/examples/jsm/controls/TransformControls"
-import fals from "fals"
-import { dirty } from "../actions"
-import {
-  flattenHierarchy,
-  preprocessMorphs,
-  skeletonToPose,
-} from "../helpers/helpers"
-import { CompressedPixelFormat } from "three"
+import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
+import { dirty } from '../actions'
+import { flattenHierarchy, preprocessMorphs, skeletonToPose } from '../helpers/helpers'
 
 export const initScene = (canvas: HTMLCanvasElement) => {
   const width = canvas.parentElement?.clientWidth || window.innerWidth
@@ -23,12 +17,7 @@ export const initScene = (canvas: HTMLCanvasElement) => {
   const fieldOfView = 50
   const nearPlane = 0.1
   const farPlane = 10000
-  const camera = new THREE.PerspectiveCamera(
-    fieldOfView,
-    aspectRatio,
-    nearPlane,
-    farPlane
-  )
+  const camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane)
   camera.position.set(0, 80, 230)
 
   const renderer = new THREE.WebGLRenderer({
@@ -46,11 +35,12 @@ export const initScene = (canvas: HTMLCanvasElement) => {
   const cameraControl = new OrbitControls(camera, renderer.domElement)
   cameraControl.target = target
   cameraControl.maxDistance = 2000
+  camera.updateProjectionMatrix()
 
   cameraControl.update()
 
   const transformControls = new TransformControls(camera, renderer.domElement)
-  transformControls.addEventListener("dragging-changed", (e) => {
+  transformControls.addEventListener('dragging-changed', e => {
     cameraControl.enabled = !e.value
   })
   scene.add(transformControls)
@@ -63,11 +53,13 @@ export const initScene = (canvas: HTMLCanvasElement) => {
 
   const lights = new THREE.Group()
 
-  const ambient = new THREE.AmbientLight(0x808080)
+  const ambient = new THREE.AmbientLight('white')
+  ambient.intensity = 0.8
   lights.add(ambient)
 
-  const light = new THREE.PointLight(0xf0f0f0)
-  light.position.set(200, 200, 100)
+  const light = new THREE.PointLight('white')
+  light.position.set(500, 500, 500)
+  light.intensity = 0.3
   lights.add(light)
 
   scene.add(lights)
@@ -93,30 +85,30 @@ export const initInteractions = ({
   let mousedown = false
   let startTime: number, startY: number
 
-  window.addEventListener("mousemove", ({ clientX }) => {
+  window.addEventListener('mousemove', ({ clientX }) => {
     if (!store.isSpacePressed || !mousedown) return
     const delta = ((startTime - clientX) / window.innerWidth) * 10
     lights.rotation.y = startY + delta
     dirty()
   })
 
-  canvas.addEventListener("mousemove", ({ clientX }) => {
+  canvas.addEventListener('mousemove', ({ clientX }) => {
     if (!mousedown) return
     if (!store.dirty) dirty()
   })
 
-  canvas.addEventListener("mousedown", ({ clientX }) => {
+  canvas.addEventListener('mousedown', ({ clientX }) => {
     startTime = clientX
     startY = lights.rotation.y
     mousedown = true
   })
-  canvas.addEventListener("wheel", () => setStore("dirty", true))
-  window.addEventListener("mouseup", () => {
+  canvas.addEventListener('wheel', () => setStore('dirty', true))
+  window.addEventListener('mouseup', () => {
     mousedown = false
   })
-  canvas.addEventListener("dblclick", () => setStore("selectedNode", false))
+  canvas.addEventListener('dblclick', () => setStore('selectedNode', false))
 
-  window.addEventListener("resize", () => {
+  window.addEventListener('resize', () => {
     const width = canvas.parentElement?.clientWidth || window.innerWidth
     const height = canvas.parentElement?.clientHeight || window.innerHeight
     renderer.setSize(width, height)
@@ -128,63 +120,59 @@ export const initInteractions = ({
   const incrementSelectionIndex = (increment = true) => {
     if (!store.selectedNode) return false
 
-    const index = store.flatHierarchy.findIndex(
-      (el) => el === store.selectedNode
-    )
+    const index = store.flatHierarchy.findIndex(el => el === store.selectedNode)
     if (index === -1) return false
 
     let newIndex = increment ? index + 1 : index - 1
     newIndex = newIndex % (store.flatHierarchy.length - 1)
     if (newIndex < 0) newIndex = store.flatHierarchy.length - 1
 
-    setStore("selectedNode", store.flatHierarchy[newIndex])
+    setStore('selectedNode', store.flatHierarchy[newIndex])
 
     return true
   }
 
   const processKeyInput = ({ code, key }: { code: string; key: string }) => {
     switch (code) {
-      case "KeyQ":
-        transformControls.setSpace(
-          transformControls.space === "local" ? "world" : "local"
-        )
+      case 'KeyQ':
+        transformControls.setSpace(transformControls.space === 'local' ? 'world' : 'local')
         return true
-      case "KeyW":
-        transformControls.setMode("translate")
+      case 'KeyW':
+        transformControls.setMode('translate')
         return true
-      case "KeyE":
-        transformControls.setMode("rotate")
+      case 'KeyE':
+        transformControls.setMode('rotate')
         return true
-      case "KeyR":
-        transformControls.setMode("scale")
+      case 'KeyR':
+        transformControls.setMode('scale')
         return true
-      case "KeyS":
+      case 'KeyS':
         return incrementSelectionIndex()
-      case "KeyA":
+      case 'KeyA':
         return incrementSelectionIndex(false)
-      case "ShiftLeft":
+      case 'ShiftLeft':
         if (cameraControl.enabled) cameraControl.enabled = false
-        setStore("isSpacePressed", true)
+        setStore('isSpacePressed', true)
         return
     }
     switch (key) {
-      case "+":
+      case '+':
         return incrementSelectionIndex()
-      case "-":
+      case '-':
         return incrementSelectionIndex(false)
     }
   }
 
-  window.addEventListener("keydown", function (event) {
+  window.addEventListener('keydown', function (event) {
     if (store.isTextFocused) return false
     if (processKeyInput(event)) dirty()
   })
-  window.addEventListener("keyup", function (event) {
+  window.addEventListener('keyup', function (event) {
     switch (event.code) {
-      case "ShiftLeft":
+      case 'ShiftLeft':
         if (!transformControls.enabled) cameraControl.enabled = true
         event.preventDefault()
-        setStore("isSpacePressed", false)
+        setStore('isSpacePressed', false)
         break
     }
   })
@@ -204,11 +192,16 @@ export const initSideEffects = ({
   createEffect(() => {
     if (!store.model) return
 
+    store.model.scale.set(0.35, 0.35, 0.35)
+    store.model.translateX(-1)
+
+    console.log(store.model)
+
     scene.add(store.model)
     store.model.visible = true
     dirty()
     // TODO: figure out a better way to register when texture has loaded
-    setTimeout(() => setStore("dirty", true), 500)
+    setTimeout(() => setStore('dirty', true), 500)
   })
 
   createEffect(() => {
@@ -230,7 +223,7 @@ export const initSideEffects = ({
     // reset dirty to false every time dirty gets set
     if (!store.dirty) return
     if (timeout) clearTimeout(timeout)
-    timeout = setTimeout(() => setStore("dirty", false), 500)
+    timeout = setTimeout(() => setStore('dirty', false), 500)
   })
 }
 
@@ -256,7 +249,7 @@ const findBones = (model: THREE.Object3D) => {
     let temp_node
     for (let i = 0; i < node.children.length; i++) {
       temp_node = node.children[i]
-      if (temp_node.type === "Bone") {
+      if (temp_node.type === 'Bone') {
         return temp_node
       } else {
         const result = walk(temp_node)
@@ -272,10 +265,7 @@ const findSkinnedMesh = (model: THREE.Object3D): THREE.Mesh | void => {
     let temp_node
     for (let i = 0; i < node.children.length; i++) {
       temp_node = node.children[i]
-      if (
-        temp_node.type === "SkinnedMesh" ||
-        "morphTargetInfluences" in temp_node
-      ) {
+      if (temp_node.type === 'SkinnedMesh' || 'morphTargetInfluences' in temp_node) {
         return temp_node as THREE.Mesh
       } else {
         const result = walk(temp_node)
@@ -284,7 +274,7 @@ const findSkinnedMesh = (model: THREE.Object3D): THREE.Mesh | void => {
     }
   }
 
-  if (model.type === "SkinnedMesh" || "morphTargetInfluences" in model) {
+  if (model.type === 'SkinnedMesh' || 'morphTargetInfluences' in model) {
     return model as THREE.Mesh
   }
   return walk(model)
@@ -295,30 +285,22 @@ export function addLoadedModelToScene(model: THREE.Object3D) {
   const skinnedMesh = findSkinnedMesh(model)
   const skeleton = findBones(model)
 
-  console.log("skinnedMesh IS ", skinnedMesh)
-
   if (!skinnedMesh) return
 
-  // skinnedMesh.children.forEach((child) => (child.visible = false))
-
   if (store.model) {
-    console.log(store.model.parent)
     store.model.parent?.remove(store.model)
-    setStore("entries", [])
+    setStore('entries', [])
   }
 
   if (skeleton) {
     const defaultPose = skeleton.clone()
-
-    setStore("skeleton", skeleton as THREE.Object3D)
-    setStore("flatHierarchy", flattenHierarchy(skeleton))
-    setStore("defaultPose", skeletonToPose(defaultPose))
+    setStore('skeleton', skeleton as THREE.Object3D)
+    setStore('flatHierarchy', flattenHierarchy(skeleton))
+    setStore('defaultPose', skeletonToPose(defaultPose))
   }
 
-  console.log("add model", model)
-
-  setStore("model", model)
-  setStore("morphs", {
+  setStore('model', model)
+  setStore('morphs', {
     targets: skinnedMesh.morphTargetInfluences,
     dictionary: skinnedMesh.morphTargetDictionary
       ? preprocessMorphs(skinnedMesh.morphTargetDictionary)

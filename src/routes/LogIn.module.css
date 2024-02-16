@@ -1,0 +1,50 @@
+.form-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.form {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr;
+  gap: 20px;
+  background-color: var(--input-bg);
+  padding: 20px;
+  border-radius: 25px;
+  align-items: center;
+
+  &.error {
+    outline: 2px solid red;
+  }
+
+  & h2 {
+    font-size: 16pt;
+    text-align: center;
+    padding-bottom: 16pt;
+  }
+
+  .errorInfo {
+    font-size: 10pt;
+    color: red;
+    text-align: center;
+  }
+
+  .errorInfo,
+  & input[type='submit'],
+  & h2 {
+    grid-column: -1 / 1;
+  }
+
+  & input,
+  & button {
+    border-radius: 10px;
+    background: white;
+    line-height: 24pt;
+    padding: 0px 25px;
+
+    &:hover {
+      outline: 2px solid black;
+    }
+  }
+}

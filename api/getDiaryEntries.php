@@ -1,4 +1,6 @@
 <?php
+header('Access-Control-Allow-Origin: *');
+
 $filenames = glob("./entries/*.json");
 $entries = array();
 foreach ($filenames as $filename){

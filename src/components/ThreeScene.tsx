@@ -1,23 +1,12 @@
-import { onMount } from "solid-js"
-import {
-  initInteractions,
-  initRender,
-  initScene,
-  initSideEffects,
-} from "./threeActions.js"
+import { onMount } from 'solid-js'
+import { initInteractions, initRender, initScene, initSideEffects } from './threeActions.js'
 
 const ThreeScene = () => {
   let canvas: HTMLCanvasElement
   onMount(async () => {
     setTimeout(() => {
-      const {
-        scene,
-        renderer,
-        camera,
-        transformControls,
-        cameraControl,
-        lights,
-      } = initScene(canvas)
+      const { scene, renderer, camera, transformControls, cameraControl, lights } =
+        initScene(canvas)
 
       initInteractions({
         canvas,

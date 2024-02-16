@@ -1,10 +1,8 @@
-import * as THREE from "three"
+import * as THREE from 'three'
 
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader"
-import { scale } from "../lib/transforms/scale"
-import { sum } from "../lib/transforms/sum"
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
-const MODEL_PATH = "./assets/hannah.fbx"
+const MODEL_PATH = './assets/hannah.fbx'
 export const fbxLoader = new FBXLoader()
 
 export type PoseNode = {
@@ -16,7 +14,7 @@ export type PoseNode = {
 }
 export type MorphsDictionaryNode = {
   value: number
-  types: { [key: string]: number }
+  types: Record<string, number>
 }
 export type MorphsDictionary = {
   [key: string]: MorphsDictionaryNode
@@ -26,7 +24,7 @@ export const preprocessMorphs = (dictionary: { [key: string]: number }) => {
   const morphs: MorphsDictionary = {}
 
   Object.entries(dictionary).forEach(([name, index]) => {
-    const [area, type] = name.split("__")
+    const [area, type] = name.split('__')
 
     if (!(area in morphs)) {
       morphs[area] = {
@@ -43,7 +41,7 @@ export const preprocessMorphs = (dictionary: { [key: string]: number }) => {
 
 export const loadModel = async () =>
   new Promise((resolve: (object: THREE.Group) => void) => {
-    fbxLoader.load(MODEL_PATH, (object) => {
+    fbxLoader.load(MODEL_PATH, object => {
       resolve(object)
     })
   })
@@ -52,9 +50,8 @@ export function flattenHierarchy(node: THREE.Object3D) {
   const stack: THREE.Object3D[] = []
   const walk = (node: THREE.Object3D) => {
     stack.push(node)
-    node.children.forEach((node) => walk(node))
+    node.children.forEach(node => walk(node))
   }
-  console.log("NODE IS", node)
   walk(node)
   return stack
 }
@@ -71,14 +68,14 @@ export function skeletonToPose(skeleton: THREE.Object3D) {
       children: [],
     }
     serialized.push(new_node)
-    skeleton.children.forEach((node) => walk(node, new_node.children))
+    skeleton.children.forEach(node => walk(node, new_node.children))
   }
   walk(skeleton, serialized)
   return clone(serialized[0])
 }
 
 export async function fetchEntries() {
-  const response = await fetch("http://localhost:8080/api/getDiaryEntries")
+  const response = await fetch('http://localhost:8888/api/getDiaryEntries.php')
   if (response.status !== 200) {
     console.error(response)
     return
@@ -88,23 +85,26 @@ export async function fetchEntries() {
 
 export const getMonth = (index: number) =>
   [
-    "January",
-    "Februari",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    'January',
+    'Februari',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ][index - 1]
 
 export const clone = <T>(element: T): T => JSON.parse(JSON.stringify(element))
 
 export function getDate() {
   let date = new Date()
-  return `${date.getDate()}_${date.getMonth() + 1}_${date.getFullYear()}`
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}_${month}_${day}`
 }
