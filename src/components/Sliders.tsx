@@ -45,7 +45,7 @@ const Slider = (props: { area: string; morph: MorphsDictionaryNode }) => {
   )
 }
 
-const Sliders = (props: { style: JSX.CSSProperties }) => {
+const Sliders = (props: { style?: JSX.CSSProperties }) => {
   return (
     <div class={'flex-1 ' + panel} style={props.style}>
       <h3 class={header}>morphs</h3>

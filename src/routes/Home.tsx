@@ -4,6 +4,7 @@ import { setStore } from '../Store'
 import { fetchEntries, loadModel } from '../helpers/helpers'
 
 import { dirty } from '../actions'
+import { Buttons } from '../components/Buttons'
 import Default from '../components/Default'
 import Hierarchy from '../components/Hierarchy'
 import Sliders from '../components/Sliders'
@@ -37,7 +38,9 @@ const Home = () => {
           <Default />
           <Sliders />
         </PanelContainer>
-        <div class="flex-1 pointer-events-none" />
+        <PanelContainer class="flex-1 flex items-end pointer-events-none">
+          <Buttons />
+        </PanelContainer>
         <PanelContainer class="left-0 w-72">
           <Hierarchy />
         </PanelContainer>
