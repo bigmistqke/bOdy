@@ -5,6 +5,7 @@ import { fetchEntries, loadModel } from '../helpers/helpers'
 
 import { dirty } from '../actions'
 import Archive from '../components/Archive'
+import { Buttons } from '../components/Buttons'
 import Default from '../components/Default'
 import Export from '../components/Export'
 import Hierarchy from '../components/Hierarchy'
@@ -45,6 +46,7 @@ const Editor = () => {
           <Hierarchy />
         </PanelContainer>
         <PanelContainer class="flex-1 flex items-end pointer-events-none">
+          <Buttons />
           <TextInput maxHeight={250} />
         </PanelContainer>
         <PanelContainer class="left-0 w-72">

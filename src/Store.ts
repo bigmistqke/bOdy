@@ -1,6 +1,6 @@
-import { createStore } from "solid-js/store"
-import * as THREE from "three"
-import { MorphsDictionary, PoseNode } from "./helpers/helpers"
+import { createStore } from 'solid-js/store'
+import * as THREE from 'three'
+import { MorphsDictionary, PoseNode } from './helpers/helpers'
 
 const [store, setStore] = createStore<{
   mode: string
@@ -18,8 +18,12 @@ const [store, setStore] = createStore<{
   selectedNode: THREE.Object3D | false
   isTextFocused: boolean
   isSpacePressed: boolean
+  transform: {
+    space: 'local' | 'world'
+    mode: 'translate' | 'rotate' | 'scale'
+  }
 }>({
-  mode: "navigation",
+  mode: 'navigation',
   model: new THREE.Object3D(),
   flatHierarchy: [],
   entries: [],
@@ -28,10 +32,14 @@ const [store, setStore] = createStore<{
     dictionary: {},
   },
   dirty: false,
-  text: "",
+  text: '',
   isTextFocused: false,
   isSpacePressed: false,
   selectedNode: false,
+  transform: {
+    space: 'local',
+    mode: 'translate',
+  },
 })
 
-export { store, setStore }
+export { setStore, store }

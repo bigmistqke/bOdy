@@ -135,15 +135,18 @@ export const initInteractions = ({
   const processKeyInput = ({ code, key }: { code: string; key: string }) => {
     switch (code) {
       case 'KeyQ':
-        transformControls.setSpace(transformControls.space === 'local' ? 'world' : 'local')
+        setStore('transform', 'space', space => (space === 'local' ? 'world' : 'local'))
         return true
       case 'KeyW':
+        setStore('transform', 'mode', 'translate')
         transformControls.setMode('translate')
         return true
       case 'KeyE':
+        setStore('transform', 'mode', 'rotate')
         transformControls.setMode('rotate')
         return true
       case 'KeyR':
+        setStore('transform', 'mode', 'scale')
         transformControls.setMode('scale')
         return true
       case 'KeyS':
@@ -177,8 +180,6 @@ export const initInteractions = ({
     }
   })
 }
-
-const bool = <T>(x: T) => x
 
 export const initSideEffects = ({
   scene,
@@ -225,6 +226,9 @@ export const initSideEffects = ({
     if (timeout) clearTimeout(timeout)
     timeout = setTimeout(() => setStore('dirty', false), 500)
   })
+
+  createEffect(() => transformControls.setSpace(store.transform.space))
+  createEffect(() => transformControls.setMode(store.transform.mode))
 }
 
 export const initRender = ({
@@ -294,6 +298,9 @@ export function addLoadedModelToScene(model: THREE.Object3D) {
 
   if (skeleton) {
     const defaultPose = skeleton.clone()
+
+    console.log(skeleton)
+
     setStore('skeleton', skeleton as THREE.Object3D)
     setStore('flatHierarchy', flattenHierarchy(skeleton))
     setStore('defaultPose', skeletonToPose(defaultPose))

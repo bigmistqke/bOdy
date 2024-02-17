@@ -8,7 +8,7 @@ import { LogIn } from './routes/LogIn'
 
 render(
   () => (
-    <Router base="creator">
+    <Router>
       <Route path="/diary/*" component={LogIn} />
       <Route path="/" component={Home} />
     </Router>
