@@ -9,8 +9,8 @@ import { LogIn } from './routes/LogIn'
 render(
   () => (
     <Router>
-      <Route path="/diary/*" component={LogIn} />
       <Route path="/" component={Home} />
+      <Route path="/diary" component={LogIn} />
     </Router>
   ),
   document.getElementById('root') as HTMLElement,

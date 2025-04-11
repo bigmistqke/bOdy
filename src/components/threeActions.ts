@@ -139,15 +139,12 @@ export const initInteractions = ({
         return true
       case 'KeyW':
         setStore('transform', 'mode', 'translate')
-        transformControls.setMode('translate')
         return true
       case 'KeyE':
         setStore('transform', 'mode', 'rotate')
-        transformControls.setMode('rotate')
         return true
       case 'KeyR':
         setStore('transform', 'mode', 'scale')
-        transformControls.setMode('scale')
         return true
       case 'KeyS':
         return incrementSelectionIndex()
