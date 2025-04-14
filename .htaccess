@@ -1,1 +1,10 @@
-FallbackResource ./index.html
+# Aktiviere URL-Rewriting
+RewriteEngine On
+
+# Wenn die Anfrage auf eine bestehende Datei oder ein Verzeichnis verweist, bediene diese direkt
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Leite alle anderen Anfragen an index.html weiter (für das SPA-Routing)
+RewriteRule ^ /index.html [L]

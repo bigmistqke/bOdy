@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  solidjs-php-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./api:/var/www/html/api
+    environment:
+      - PHP_MEMORY_LIMIT=256M
+      - UPLOAD_MAX_FILESIZE=20M
+      - POST_MAX_SIZE=20M
