@@ -1,4 +1,3 @@
-# Build-Stage für SolidJS
 FROM node:20 AS frontend-builder
 
 
@@ -26,7 +25,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN echo '\
     <VirtualHost *:80>\n\
-    ServerName localhost\n\
+    ServerName badaa.xyz\n\
     DocumentRoot /var/www/html/dist\n\
     ErrorLog ${APACHE_LOG_DIR}/error.log\n\
     CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
@@ -56,6 +55,7 @@ COPY --from=frontend-builder /app/api /var/www/html/api
 COPY --from=frontend-builder /app/dist/getDiaryEntries.php /var/www/html/
 COPY --from=frontend-builder /app/dist/saveDiaryEntry.php /var/www/html/
 COPY --from=frontend-builder /app/dist/index.html /var/www/html/
+COPY --from=frontend-builder /app/dist/entries /var/www/html/entries
 
 COPY --from=frontend-builder /app/assets /var/www/html/assets
 
