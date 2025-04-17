@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install zip
 
 RUN echo '\
-    <VirtualHost *:80>\n\
+    <VirtualHost *:443>\n\
     ServerName badaa.xyz\n\
     DocumentRoot /var/www/html/dist\n\
     ErrorLog ${APACHE_LOG_DIR}/error.log\n\
