@@ -7,6 +7,8 @@ import { headerButton, panel } from '../styles'
 
 const Save = () => {
   const saveDiaryEntry = async () => {
+    alert('Saving is currently disabled');
+    return;
     if (fals(store.skeleton)) return
     const data = {
       pose: skeletonToPose(store.skeleton),
