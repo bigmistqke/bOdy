@@ -5,14 +5,14 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 export default defineConfig({
   plugins: [
     solidPlugin(),
-    viteStaticCopy({
+    /*viteStaticCopy({
       targets: [
         {
           src: 'api/*', // adjust this path to where your files are
           dest: '', // copied to dist/ (root of output folder)
         },
       ],
-    }),
+    }),*/
   ],
   server: {
     port: 3000,

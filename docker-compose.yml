@@ -1,15 +1,39 @@
-version: '3.8'
-
+version: '3'
 services:
-  solidjs-php-app:
+  node-hello-world:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile_inline: |
+        FROM node:latest AS frontend-builder
+
+        WORKDIR /app
+
+        COPY package*.json pnpm-lock.yaml ./
+        RUN npm install --force
+
+        COPY . .
+
+        RUN npm run build
+
+        FROM node:latest
+
+        WORKDIR /usr/src/app
+
+        COPY server.cert /usr/src/app/server.cert
+        COPY server.key /usr/src/app/server.key
+
+        COPY --from=frontend-builder /app/dist/index.html /usr/src/app/
+        COPY --from=frontend-builder /app/dist/assets /usr/src/app/assets/
+        COPY --from=frontend-builder /app/dist/assets/ /usr/src/app/assets/
+        COPY app.js /usr/src/app/
+        COPY hannah.fbx /usr/src/app/
+        COPY /entries /usr/src/app/entries
+        COPY /src/assets/favicon.png /usr/src/app/assets/
+
+        EXPOSE 80
+        EXPOSE 443
+
+        CMD [ "node", "app.js" ]
     ports:
-      - "8080:80"
-    volumes:
-      - ./api:/var/www/html/api
-    environment:
-      - PHP_MEMORY_LIMIT=256M
-      - UPLOAD_MAX_FILESIZE=20M
-      - POST_MAX_SIZE=20M
+      - "80:80"
+      - "443:443"
